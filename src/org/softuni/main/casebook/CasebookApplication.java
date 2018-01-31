@@ -1,8 +1,8 @@
 package org.softuni.main.casebook;
 
 
-import org.softuni.main.casebook.handlers.fixed.ErrorHandler;
-import org.softuni.main.casebook.handlers.fixed.ResourceHandler;
+import org.softuni.main.casebook.handlers.utility.ErrorHandler;
+import org.softuni.main.casebook.handlers.utility.ResourceHandler;
 import org.softuni.main.casebook.utils.HandlerLoader;
 import org.softuni.main.javache.Application;
 import org.softuni.main.javache.http.HttpContext;
@@ -21,7 +21,7 @@ public class CasebookApplication implements Application {
 
     private HttpSession session;
 
-    private HashMap<String, Function<HttpContext, byte[]>> routesTable;
+    private HashMap<String, Map<String, Function<HttpContext, byte[]>>> routesTable;
 
     private final ErrorHandler errorHandler = new ErrorHandler();
 
@@ -44,18 +44,18 @@ public class CasebookApplication implements Application {
                         .getConstructor()
                         .newInstance();
 
-                this.routesTable.put(actionEntry.getKey(),
+                this.routesTable.putIfAbsent(actionEntry.getKey(), new HashMap<>());
+
+                this.routesTable.get(actionEntry.getKey()).put(method,
                         (HttpContext httpContext) -> {
-                            if(!httpContext.getHttpRequest().getMethod().equals(method)){
-                                return this.errorHandler.badRequest(httpContext.getHttpRequest(), httpContext.getHttpResponse())
-                                        .getBytes();
-                            }
 
                             try {
-                                return ((HttpResponse)actionEntry.getValue()
+                                return ((HttpResponse)actionEntry
+                                        .getValue()
                                         .invoke(handlerObject,
                                                 httpContext.getHttpRequest(),
-                                                httpContext.getHttpResponse())).getBytes();
+                                                httpContext.getHttpResponse()))
+                                        .getBytes();
 
                             } catch (IllegalAccessException
                                     | InvocationTargetException e) {
@@ -89,15 +89,27 @@ public class CasebookApplication implements Application {
 
     @Override
     public byte[] handleRequest(HttpContext httpContext) {
+        String requestMethod = httpContext.getHttpRequest().getMethod();
         String requestUrl = httpContext.getHttpRequest().getRequestUrl();
 
-        if(!this.getRoutes().containsKey(requestUrl)){
-            return this.errorHandler.notFound(httpContext.getHttpRequest(),
-                    httpContext.getHttpResponse())
-                    .getBytes();
+        if(this.getRoutes().containsKey(requestUrl) &&
+                this.getRoutes().get(requestUrl).containsKey(requestMethod)){
+            return this.getRoutes().get(requestUrl).get(requestMethod).apply(httpContext);
+        }else {
+            HttpResponse httpResponse = this
+                    .resourceHandler
+                    .getResource(httpContext.getHttpRequest(), httpContext.getHttpResponse());
+
+            if(httpResponse == null){
+                return this.errorHandler.notFound(httpContext.getHttpRequest(),
+                        httpContext.getHttpResponse())
+                        .getBytes();
+            }
+
+            return httpResponse.getBytes();
         }
 
-        return this.getRoutes().get(requestUrl).apply(httpContext);
+
     }
 
     private HttpResponse notFound(HttpContext httpContext) {
@@ -111,7 +123,7 @@ public class CasebookApplication implements Application {
     }
 
     @Override
-    public Map<String, Function<HttpContext, byte[]>> getRoutes() {
+    public Map<String, Map<String, Function<HttpContext, byte[]>>> getRoutes() {
         return Collections.unmodifiableMap(this.routesTable);
     }
 

@@ -1,4 +1,4 @@
-package org.softuni.main.casebook.handlers.fixed;
+package org.softuni.main.casebook.handlers.utility;
 
 import org.softuni.main.javache.http.HttpRequest;
 import org.softuni.main.javache.http.HttpResponse;

@@ -7,7 +7,7 @@ import org.softuni.main.javache.http.HttpResponse;
 import org.softuni.main.javache.http.HttpStatus;
 
 @ApplicationRequestHandler
-public class HomeHandler {
+public class HomeHandler extends BaseHandler{
 
     public HomeHandler(){
     }
@@ -17,22 +17,11 @@ public class HomeHandler {
         response.setStatusCode(HttpStatus.OK);
 
         response.addHeader("Content-Type", "text/html");
-        response.setContent("<h1>Hello From Casebook</h1><hr/><h2>This is Home</h2>".getBytes());
+        response.setContent(this.getView("index").getBytes());
 
         return response;
     }
 
-    @Get(route = "/login")
-    public HttpResponse login(HttpRequest request, HttpResponse response){
-        response.setStatusCode(HttpStatus.OK);
-
-        response.addHeader("Content-Type", "text/html");
-        response.setContent(("<h1>Login Page</h1><hr/><h2>This is Login</h2>" +
-                "<form method=\"POST\">" +
-                "<button type=\"submit\">Submit</button></form>").getBytes());
-
-        return response;
-    }
 
 
 }
