@@ -3,9 +3,11 @@ package org.softuni.main.javache.http;
 import java.util.Map;
 
 public interface HttpSession {
+    String getId();
 
-    void setSessionData(String sessionId, Map<String, Object> dataMap);
+    void addAttribute(String attribute, Object value);
 
-    Map<String, Object> getSessionData(String sessionId);
+    Map<String, Object> getAttributes();
 
+    void invalidate();
 }

@@ -1,10 +1,9 @@
 package org.softuni.main.javache;
+
 import org.softuni.main.javache.io.Reader;
 import org.softuni.main.javache.io.Writer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class ConnectionHandler extends Thread {
@@ -36,13 +35,12 @@ public class ConnectionHandler extends Thread {
         try {
             String requestContent = null;
 
-            //AWAIT
-            while (true){
+            int i = 0;
+
+            while(i++ < 5000) {
                 requestContent = Reader.readAllLines(this.clientSocketInputStream);
 
-                if(requestContent.length() > 0){
-                    break;
-                }
+                if(requestContent.length() > 0) break;
             }
 
             byte[] responseContent = this.requestHandler.handleRequest(requestContent);

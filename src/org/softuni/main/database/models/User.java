@@ -1,12 +1,13 @@
 package org.softuni.main.database.models;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.*;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -15,12 +16,19 @@ public class User {
     )
     @Column(name = "id")
     private String id;
-    @Column(name="username", unique = true, nullable = false)
+
+    @Column(unique = true, nullable = false)
     private String username;
-    @Column(name = "password", nullable = false)
+
+    @Column(nullable = false)
     private String password;
 
-    public User(){}
+    @ManyToMany
+    private Set<User> friends;
+
+    public User() {
+        this.friends = new HashSet<>();
+    }
 
     public User(String username, String password) {
         this.setUsername(username);
@@ -49,5 +57,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<User> getFriends() {
+        return Collections.unmodifiableSet(this.friends);
+    }
+
+    public void addFriend(User friend) {
+        this.friends.add(friend);
     }
 }

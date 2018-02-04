@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="bootstrap.min.css" type="text/css"/>
-</head>
-<body>
 <div class="container">
-    <h1>Login Page</h1>
-        <hr/>
     <h2>This is Login</h2>
     <form method="post">
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <div class="form-group">
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" class="form-control" name="username" />
+        </div>
+        <div class="form-group">
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" class="form-control" name="password" />
+        </div>
+        <button class="btn btn-primary" type="submit">Login</button>
     </form>
-
-    <img src="images/system.png" />
 </div>
-</body>
-</html>

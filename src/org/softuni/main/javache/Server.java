@@ -1,6 +1,8 @@
 package org.softuni.main.javache;
+
 import org.softuni.main.javache.http.HttpSession;
-import org.softuni.main.javache.http.HttpSessionImpl;
+import org.softuni.main.javache.http.HttpSessionStorage;
+import org.softuni.main.javache.http.HttpSessionStorageImpl;
 
 import java.io.*;
 import java.net.*;
@@ -15,11 +17,11 @@ public class Server {
 
     private int port;
 
-    private Application application;
-
     private int timeouts;
 
     private ServerSocket server;
+
+    private Application application;
 
     public Server(int port, Application application) {
         this.port = port;
@@ -33,8 +35,9 @@ public class Server {
 
         this.server.setSoTimeout(SOCKET_TIMEOUT_MILLISECONDS);
 
-        HttpSession session = new HttpSessionImpl();
-        application.setSession(session);
+        HttpSessionStorage sessionStorage = new HttpSessionStorageImpl();
+        this.application.setSessionStorage(sessionStorage);
+        this.application.initializeRoutes();
 
         while(true) {
             try(Socket clientSocket = this.server.accept()) {

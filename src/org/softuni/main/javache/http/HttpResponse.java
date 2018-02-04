@@ -1,4 +1,5 @@
 package org.softuni.main.javache.http;
+
 import org.softuni.main.javache.WebConstants;
 
 import java.util.Arrays;
@@ -29,6 +30,8 @@ public interface HttpResponse {
 
     HashMap<String, String> getHeaders();
 
+    HashMap<String, HttpCookie> getCookies();
+
     HttpStatus getStatusCode();
 
     byte[] getContent();
@@ -41,5 +44,5 @@ public interface HttpResponse {
 
     void addHeader(String header, String value);
 
-    void addCookie(String cookie, String value);
+    void addCookie(HttpCookie cookie);
 }

@@ -1,6 +1,5 @@
 package org.softuni.main.javache;
 
-
 import org.softuni.main.javache.http.*;
 
 class RequestHandler {

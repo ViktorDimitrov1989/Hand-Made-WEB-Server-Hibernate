@@ -16,16 +16,16 @@ public class HttpContextImpl implements HttpContext {
         return this.httpRequest;
     }
 
+    private void setHttpRequest(HttpRequest httpRequest) {
+        this.httpRequest = httpRequest;
+    }
+
     @Override
     public HttpResponse getHttpResponse() {
         return this.httpResponse;
     }
 
-    public void setHttpRequest(HttpRequest httpRequest) {
-        this.httpRequest = httpRequest;
-    }
-
-    public void setHttpResponse(HttpResponse httpResponse) {
+    private void setHttpResponse(HttpResponse httpResponse) {
         this.httpResponse = httpResponse;
     }
 }
